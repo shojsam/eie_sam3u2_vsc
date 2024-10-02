@@ -380,14 +380,14 @@ def get_jlink_srch_path(exe_name: str):
         install_roots = [
             "C:\\Program Files\\SEGGER\\",
             "C:\\Program Files (x86)\\SEGGER\\",
-            "D:\\SEGGER\\JLink_V798i",
+            "C:\\SEGGER\\JLink_V798i",
         ]
 
     elif Utils.unversioned_sys_platform() == "darwin":
         install_roots = ["/Application/SEGGER/JLink"]
 
     elif Utils.unversioned_sys_platform() == "linux":
-        install_roots = ["/opt/SEGGER/JLink"]
+        install_roots = ["C:\\SEGGER\\JLink_V798i"]
 
     for root_s in install_roots:
         root = pathlib.Path(root_s)
