@@ -143,16 +143,35 @@ static void UserApp1SM_Idle(void)
 {
   static u16 u16Counter = U16_COUNTER_PERIOD_MS;
   static bool x=FALSE;
+  static bool y=FALSE;
   u16Counter--;
   if(u16Counter==0)
   {
     u16Counter= U16_COUNTER_PERIOD_MS;
     if(x){
       HEARTBEAT_OFF();
+      if(y){
+      LedOff(BLUE);
+      LedOff(RED);
+      LedOff(GREEN);
+      LedOff(PURPLE);
+      LedOff(WHITE);
+      LedOff(ORANGE);
+      LedOff(YELLOW);
+      LedOff(CYAN);}
       x=FALSE;}
     else
     {
       HEARTBEAT_ON();
+      if(y){
+      LedOn(BLUE);
+      LedOn(RED);
+      LedOn(GREEN);
+      LedOn(PURPLE);
+      LedOn(WHITE);
+      LedOn(ORANGE);
+      LedOn(YELLOW);
+      LedOn(CYAN);}
       x=TRUE;
     }
   }
