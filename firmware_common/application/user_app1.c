@@ -160,7 +160,6 @@ static void UserApp1SM_Idle(void)
       LedOff(YELLOW);
       LedOff(CYAN);}
       x=FALSE;}
-      x=TRUE;
     else
     {
       HEARTBEAT_ON();
