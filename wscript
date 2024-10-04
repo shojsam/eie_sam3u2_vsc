@@ -378,7 +378,7 @@ def get_jlink_srch_path(exe_name: str):
     if Utils.is_win32:
 
         install_roots = [
-            "C:\\Program Files\\SEGGER\\JLink_V798i",
+            "C:\\Program Files\\SEGGER\\JLink_V798i\\",
             "C:\\Program Files\\SEGGER\\",
             "C:\\Program Files (x86)\\SEGGER\\",
         ]
