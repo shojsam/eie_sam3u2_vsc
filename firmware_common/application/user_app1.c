@@ -143,14 +143,15 @@ static void UserApp1SM_Idle(void)
 {
   static u16 u16Counter = U16_COUNTER_PERIOD_MS;
   static bool x=FALSE;
-  static bool y=FALSE;
+  static bool y=TRUE;
   u16Counter--;
-  if(u16Counter==0)
-  {
-    u16Counter= U16_COUNTER_PERIOD_MS;
-    if(x){
-      HEARTBEAT_OFF();
-      if(y){
+  
+
+    if(WasButtonPressed(BUTTON1)){
+      y=!y;
+      }
+    ButtonAcknowledge(BUTTON1);
+    if(y==FALSE){
       LedOff(BLUE);
       LedOff(RED);
       LedOff(GREEN);
@@ -158,12 +159,9 @@ static void UserApp1SM_Idle(void)
       LedOff(WHITE);
       LedOff(ORANGE);
       LedOff(YELLOW);
-      LedOff(CYAN);}
-      x=FALSE;}
-    else
-    {
-      HEARTBEAT_ON();
-      if(y){
+      LedOff(CYAN);
+    }
+    else if(y){
       LedOn(BLUE);
       LedOn(RED);
       LedOn(GREEN);
@@ -172,6 +170,16 @@ static void UserApp1SM_Idle(void)
       LedOn(ORANGE);
       LedOn(YELLOW);
       LedOn(CYAN);}
+  if(u16Counter==0)
+  {
+    u16Counter= U16_COUNTER_PERIOD_MS;
+    
+    if(x){
+      HEARTBEAT_OFF();
+      x=FALSE;}
+    else
+    {
+      HEARTBEAT_ON();
       x=TRUE;
     }
   }
