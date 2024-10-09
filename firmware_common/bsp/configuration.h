@@ -22,7 +22,7 @@ $$$$$ SPI peripheral board-specific parameters
 /**********************************************************************************************************************
 Runtime switches
 ***********************************************************************************************************************/
-//#define STARTUP_SOUND               /*!< Define to include buzzer sound on startup */
+#define STARTUP_SOUND               /*!< Define to include buzzer sound on startup */
 
 //#define EIE_DOTMATRIX_R01           /*!< Use with MPGL2-EHDW-01 revision board */
 
