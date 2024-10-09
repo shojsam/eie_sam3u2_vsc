@@ -144,32 +144,40 @@ static void UserApp1SM_Idle(void)
   static u16 u16Counter = U16_COUNTER_PERIOD_MS;
   static bool x=FALSE;
   static bool y=TRUE;
+  static bool z=TRUE;
   u16Counter--;
+  if(WasButtonPressed(BUTTON1)){
+    z=!z;}
+  if(!z){
+  LedOff(LCD_BLUE);
+  LedOff(LCD_RED);}
+  if(z){
+  LedOn(LCD_BLUE);
+  LedOn(LCD_RED);}
+  if(WasButtonPressed(BUTTON0)){
+    y=!y;}
+  ButtonAcknowledge(BUTTON0);
+  ButtonAcknowledge(BUTTON1);
   
-
-    if(WasButtonPressed(BUTTON1)){
-      y=!y;
-      }
-    ButtonAcknowledge(BUTTON1);
-    if(y==FALSE){
-      LedOff(BLUE);
-      LedOff(RED);
-      LedOff(GREEN);
-      LedOff(PURPLE);
-      LedOff(WHITE);
-      LedOff(ORANGE);
-      LedOff(YELLOW);
-      LedOff(CYAN);
+  if(y==FALSE){
+    LedOff(BLUE);
+    LedOff(RED);
+    LedOff(GREEN);
+    LedOff(PURPLE);
+     LedOff(WHITE);
+    LedOff(ORANGE);
+    LedOff(YELLOW);
+    LedOff(CYAN);
     }
     else if(y){
-      LedOn(BLUE);
-      LedOn(RED);
-      LedOn(GREEN);
-      LedOn(PURPLE);
-      LedOn(WHITE);
-      LedOn(ORANGE);
-      LedOn(YELLOW);
-      LedOn(CYAN);}
+    LedOn(BLUE);
+    LedOn(RED);
+    LedOn(GREEN);
+    LedOn(PURPLE);
+    LedOn(WHITE);
+    LedOn(ORANGE);
+    LedOn(YELLOW);
+    LedOn(CYAN);}
   if(u16Counter==0)
   {
     u16Counter= U16_COUNTER_PERIOD_MS;
