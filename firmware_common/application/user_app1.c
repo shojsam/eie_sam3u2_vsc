@@ -147,17 +147,18 @@ static void UserApp1SM_Idle(void)
   static bool z=TRUE;
   static bool buz=FALSE;
   u16Counter--;
+  
   if(WasButtonPressed(BUTTON2)){
     buz=!buz;}
     if(buz){
     LedOn(BLUE);
     PWMAudioSetFrequency(BUZZER1, 4000);
     PWMAudioOn(BUZZER1);
-    PWMAudioSetFrequency(BUZZER2, 500);
+    PWMAudioSetFrequency(BUZZER2, 4000);
     PWMAudioOn(BUZZER2);}
     if(!buz){
     PWMAudioOff(BUZZER1);
-  PWMAudioOff(BUZZER2);
+    PWMAudioOff(BUZZER2);
     }
   if(WasButtonPressed(BUTTON1)){
     z=!z;}
@@ -173,11 +174,12 @@ static void UserApp1SM_Idle(void)
   ButtonAcknowledge(BUTTON1);
   ButtonAcknowledge(BUTTON2);
   if(y==FALSE){
+    
     LedOff(BLUE);
     LedOff(RED);
     LedOff(GREEN);
     LedOff(PURPLE);
-     LedOff(WHITE);
+    LedOff(WHITE);
     LedOff(ORANGE);
     LedOff(YELLOW);
     LedOff(CYAN);
