@@ -141,73 +141,91 @@ State Machine Function Definitions
 /* What does this state do? */
 static void UserApp1SM_Idle(void)
 {
-  static u16 u16Counter = U16_COUNTER_PERIOD_MS;
-  static bool x=FALSE;
-  static bool y=TRUE;
-  static bool z=TRUE;
-  static bool buz=FALSE;
-  u16Counter--;
-  
-  if(WasButtonPressed(BUTTON2)){
-    buz=!buz;}
-    if(buz){
-    LedOn(BLUE);
-    PWMAudioSetFrequency(BUZZER1, 4000);
-    PWMAudioOn(BUZZER1);
-    PWMAudioSetFrequency(BUZZER2, 4000);
-    PWMAudioOn(BUZZER2);}
-    if(!buz){
-    PWMAudioOff(BUZZER1);
-    PWMAudioOff(BUZZER2);
-    }
-  if(WasButtonPressed(BUTTON1)){
-    z=!z;}
-  if(!z){
-  LedOff(LCD_BLUE);
-  LedOff(LCD_RED);}
-  if(z){
-  LedOn(LCD_BLUE);
-  LedOn(LCD_RED);}
-  if(WasButtonPressed(BUTTON0)){
-    y=!y;}
-  ButtonAcknowledge(BUTTON0);
-  ButtonAcknowledge(BUTTON1);
-  ButtonAcknowledge(BUTTON2);
-  if(y==FALSE){
+    static u16 u16Counter = U16_COUNTER_PERIOD_MS;
+    static bool y = FALSE;
+    static bool z = TRUE;
+    static bool buz = FALSE;
+    static u8 ledIndex = 0;
+    static bool x = FALSE;
     
-    LedOff(BLUE);
-    LedOff(RED);
-    LedOff(GREEN);
-    LedOff(PURPLE);
-    LedOff(WHITE);
-    LedOff(ORANGE);
-    LedOff(YELLOW);
-    LedOff(CYAN);
-    }
-    else if(y){
-    LedOn(BLUE);
-    LedOn(RED);
-    LedOn(GREEN);
-    LedOn(PURPLE);
-    LedOn(WHITE);
-    LedOn(ORANGE);
-    LedOn(YELLOW);
-    LedOn(CYAN);}
+    u16Counter--;
 
-  if(u16Counter==0)
-  {
-    u16Counter= U16_COUNTER_PERIOD_MS;
-    
-    if(x){
-      HEARTBEAT_OFF();
-      x=FALSE;}
-    else
-    {
-      HEARTBEAT_ON();
-      x=TRUE;
+    // Toggle buzzer on button press
+    if(WasButtonPressed(BUTTON2)){
+        buz = !buz;
     }
-  }
-} /* end UserApp1SM_Idle() */
+
+    // Control buzzer and LEDs based on buz state
+    if(buz){
+        LedOn(BLUE);
+        PWMAudioSetFrequency(BUZZER1, 4000);
+        PWMAudioOn(BUZZER1);
+        PWMAudioSetFrequency(BUZZER2, 4000);
+        PWMAudioOn(BUZZER2);
+    } else {
+        PWMAudioOff(BUZZER1);
+        PWMAudioOff(BUZZER2);
+    }
+
+    // Toggle LEDs based on BUTTON1 press
+    if(WasButtonPressed(BUTTON1)){
+        z = !z;
+    }
+
+    // Control LEDs for LCD
+    if(z){
+        LedOn(LCD_BLUE);
+        LedOn(LCD_RED);
+    } else {
+        LedOff(LCD_BLUE);
+        LedOff(LCD_RED);
+    }
+
+    // Toggle all LEDs based on BUTTON0 press
+    if(WasButtonPressed(BUTTON0)){
+        y = !y;
+    }
+
+    // Make LEDs turn on one by one if y is TRUE
+    if (y){
+        LedOn(LCD_BLUE);
+        if (u16Counter == 0) {
+            u16Counter = U16_COUNTER_PERIOD_MS;
+
+            LedOn((LedNameType)ledIndex); // Turn on the next LED
+            ledIndex++; // Increment to the next LED
+            
+            if (ledIndex >= U8_TOTAL_LEDS) {
+                ledIndex = 0; // Reset once all LEDs are turned on
+            }
+        }
+    }
+
+    // Turn off LEDs if y is FALSE
+    if (!y){
+        for(u8 i = 0; i < (U8_TOTAL_LEDS - 3); i++){
+            LedOff((LedNameType)i);
+        }
+    }
+     if(u16Counter == 0){
+        u16Counter = U16_COUNTER_PERIOD_MS;
+        if(x){
+            HEARTBEAT_OFF();
+            x = FALSE;
+        } else {
+            HEARTBEAT_ON();
+            x = TRUE;
+        }
+    }
+    
+
+    // Acknowledge all button presses
+    ButtonAcknowledge(BUTTON0);
+    ButtonAcknowledge(BUTTON1);
+    ButtonAcknowledge(BUTTON2);
+}
+
+/* end UserApp1SM_Idle() */
      
 
 /*-------------------------------------------------------------------------------------------------------------------*/
