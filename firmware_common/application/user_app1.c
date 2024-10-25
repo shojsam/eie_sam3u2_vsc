@@ -158,8 +158,8 @@ static void UserApp1SM_Idle(void)
        LedOn(GREEN);
       pass_set_mode=TRUE;
     }
-  if (pass_au){}
-  
+  if (pass_au){for(u8 q;q<U8_TOTAL_LEDS-3;q++){LedToggle((LedNameType)q);}}
+
   if(pass_mode) {
     //button1
     if(WasButtonPressed(BUTTON1)){
@@ -185,6 +185,7 @@ static void UserApp1SM_Idle(void)
       if (IsButtonHeld(BUTTON3,2000)){pass_mode=FALSE;
       pass_au=CheckPasswordMatch(a_u8_pass,a_u8_set_pass,&num_added);
     }}
+
 ////////////////////////////////////////////////////////////////////
     if(pass_set_mode) {
     //button1
@@ -212,9 +213,9 @@ static void UserApp1SM_Idle(void)
     num_added=0;
     LedOff(GREEN);}
     }
-
+   
 }
-bool CheckPasswordMatch(char* pass1,char* pass2,u8* num_added) {
+void CheckPasswordMatch(char* pass1,char* pass2,u8* num_added) {
     for (int i = 0; i < num_added; i++) {
         if (pass2[i] != pass1[i]) {
             return FALSE; // If any character does not match, return false
