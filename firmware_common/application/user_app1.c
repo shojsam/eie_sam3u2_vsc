@@ -141,90 +141,87 @@ State Machine Function Definitions
 /* What does this state do? */
 static void UserApp1SM_Idle(void)
 {
-    static u16 u16Counter = U16_COUNTER_PERIOD_MS;
-    static bool y = FALSE;
-    static bool z = TRUE;
-    static bool buz = FALSE;
-    static u8 ledIndex = 0;
-    static bool x = FALSE;
+    static bool pass_mode = FALSE;
+    static pass_set_mode=FALSE;
+    static pass_au=FALSE;
+    u16 a_u8_pass[10]= {};
+    u16 a_u8_set_pass[10]= {};
+    u8 num_added=0;
     
-    u16Counter--;
-
-    // Toggle buzzer on button press
-    if(WasButtonPressed(BUTTON2)){
-        buz = !buz;
+    if(WasButtonPressed(BUTTON3)&!pass_set_mode){
+       ButtonAcknowledge(BUTTON3);
+       LedOn(RED);
+      pass_mode=TRUE;
     }
-
-    // Control buzzer and LEDs based on buz state
-    if(buz){
-        LedOn(BLUE);
-        PWMAudioSetFrequency(BUZZER1, 4000);
-        PWMAudioOn(BUZZER1);
-        PWMAudioSetFrequency(BUZZER2, 4000);
-        PWMAudioOn(BUZZER2);
-    } else {
-        PWMAudioOff(BUZZER1);
-        PWMAudioOff(BUZZER2);
+    if(WasButtonPressed(BUTTON2)&!pass_mode){
+       ButtonAcknowledge(BUTTON2);
+       LedOn(GREEN);
+      pass_set_mode=TRUE;
     }
-
-    // Toggle LEDs based on BUTTON1 press
+  if (pass_au){}
+  
+  if(pass_mode) {
+    //button1
     if(WasButtonPressed(BUTTON1)){
-        z = !z;
-    }
+      ButtonAcknowledge(BUTTON1);
+      LedOn(BLUE);
+      a_u8_pass[num_added++]="B";
+      a_u8_pass[num_added++]="1";
+      LcdMessage(LINE1_START_ADDR,a_u8_pass[num_added-2]);
+      LcdMessage(LINE1_START_ADDR+1,a_u8_pass[num_added-1]);}
 
-    // Control LEDs for LCD
-    if(z){
-        LedOn(LCD_BLUE);
-        LedOn(LCD_RED);
-    } else {
-        LedOff(LCD_BLUE);
-        LedOff(LCD_RED);
-    }
-
-    // Toggle all LEDs based on BUTTON0 press
+    else{
+      LedOff(BLUE);}    
+    //button 0
     if(WasButtonPressed(BUTTON0)){
-        y = !y;
+      ButtonAcknowledge(BUTTON0);
+      LedOn(WHITE);
+      a_u8_pass[num_added++]="B";
+      a_u8_pass[num_added++]="0";
+      LcdMessage(LINE1_START_ADDR,a_u8_pass[num_added-2]);
+      LcdMessage(LINE1_START_ADDR+1,a_u8_pass[num_added-1]);}
+    else{
+      LedOff(WHITE);}
+      if (IsButtonHeld(BUTTON3,2000)){pass_mode=FALSE;
+      pass_au=CheckPasswordMatch(a_u8_pass,a_u8_set_pass,&num_added);
+    }}
+////////////////////////////////////////////////////////////////////
+    if(pass_set_mode) {
+    //button1
+    if(WasButtonPressed(BUTTON1)){
+      ButtonAcknowledge(BUTTON1);
+      LedOn(BLUE);
+      a_u8_set_pass[num_added++]="B";
+      a_u8_set_pass[num_added++]="1";
+      LcdMessage(LINE1_START_ADDR,a_u8_set_pass[num_added-2]);
+      LcdMessage(LINE1_START_ADDR+1,a_u8_set_pass[num_added-1]);}
+
+    else{
+      LedOff(BLUE);}    
+    //button 0
+    if(WasButtonPressed(BUTTON0)){
+      ButtonAcknowledge(BUTTON0);
+      LedOn(WHITE);
+      a_u8_set_pass[num_added++]="B";
+      a_u8_set_pass[num_added++]="0";
+      LcdMessage(LINE1_START_ADDR,a_u8_set_pass[num_added-2]);
+      LcdMessage(LINE1_START_ADDR+1,a_u8_set_pass[num_added-1]);}
+    else{
+      LedOff(WHITE);}
+    if (IsButtonHeld(BUTTON2,2000)){pass_set_mode=FALSE;
+    num_added=0;
+    LedOff(GREEN);}
     }
 
-    // Make LEDs turn on one by one if y is TRUE
-    if (y){
-        LedOn(LCD_BLUE);
-        if (u16Counter == 0) {
-            u16Counter = U16_COUNTER_PERIOD_MS;
-
-            LedOn((LedNameType)ledIndex); // Turn on the next LED
-            ledIndex++; // Increment to the next LED
-            
-            if (ledIndex >= U8_TOTAL_LEDS) {
-                ledIndex = 0; // Reset once all LEDs are turned on
-            }
-        }
-    }
-
-    // Turn off LEDs if y is FALSE
-    if (!y){
-        for(u8 i = 0; i < (U8_TOTAL_LEDS - 3); i++){
-            LedOff((LedNameType)i);
-        }
-    }
-     if(u16Counter == 0){
-        u16Counter = U16_COUNTER_PERIOD_MS;
-        if(x){
-            HEARTBEAT_OFF();
-            x = FALSE;
-        } else {
-            HEARTBEAT_ON();
-            x = TRUE;
-        }
-    }
-    
-
-    // Acknowledge all button presses
-    ButtonAcknowledge(BUTTON0);
-    ButtonAcknowledge(BUTTON1);
-    ButtonAcknowledge(BUTTON2);
 }
-
+bool CheckPasswordMatch(char* pass1,char* pass2,u8* num_added) {
+    for (int i = 0; i < num_added; i++) {
+        if (pass2[i] != pass1[i]) {
+            return FALSE; // If any character does not match, return false
+        }
+    }
+    return TRUE; // If all characters match, return true
+}
 /* end UserApp1SM_Idle() */
      
 
